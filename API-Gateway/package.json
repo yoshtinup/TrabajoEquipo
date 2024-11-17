@@ -4,11 +4,12 @@
     "description": "API Gateway para microservicios",
     "main": "server.js",
     "scripts": {
-      "start": "node server.js" 
+        "start": "node server.js"
     },
     "dependencies": {
-      "express": "^4.18.2",
-      "http-proxy-middleware": "^2.0.6"
+        "axios": "^1.7.7",
+        "express": "^4.18.2",
+        "http-proxy-middleware": "^2.0.6",
+        "microservice-health-checker": "^1.0.1"
     }
 }
-  
