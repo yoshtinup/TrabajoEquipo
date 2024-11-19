@@ -1,6 +1,7 @@
 import express from "express";
 import signale from "signale";
 import cors from "cors";
+import { db } from "./database/mysql.js";
 
 import { clientRouter } from "./v1/Usuarios/Infrestructura/interfaces/http/router/RegistroRouter.js";
 
@@ -14,9 +15,38 @@ app.use(express.json());
 
 app.use("/api/v1", clientRouter);
 
-app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'UP Usuarios', timestamp: new Date() });
+app.get('/health', async (req, res) => {
+  try {
+      // probamos la conexio
+      const [rows] = await db.query('SELECT 1');
+      
+      if (rows) {
+          res.status(200).json({
+            service: "User Service",
+              status: 'UP',
+              message: 'Database connection is healthy',
+              timestamp: new Date().toISOString()
+          });
+      } else {
+          res.status(500).json({
+            service: "User Service",
+              status: 'DOWN',
+              message: 'Database connection failed',
+              timestamp: new Date().toISOString()
+          });
+      }
+  } catch (error) {
+      signale.error('Database connection failed:', error);
+      res.status(500).json({
+          service: "User Service",
+          status: 'DOWN',
+          message: 'Database connection failed',
+          error: error.message,
+          timestamp: new Date().toISOString()
+      });
+  }
 });
+
 
 const PORT = 3002;
 app.listen(PORT, () => {
