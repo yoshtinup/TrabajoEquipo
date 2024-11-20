@@ -8,64 +8,35 @@ class NotificationServiceHealth {
     async checkBrevo() {
         try {
             const apiInstance = new brevo.TransactionalEmailsApi();
-            apiInstance.setApiKey(
-                brevo.TransactionalEmailsApiApiKeys.apiKey,
-                process.env.BREVO_API_KEY
-            );
+            apiInstance.setApiKey(brevo.TransactionalEmailsApiApiKeys.apiKey, process.env.BREVO_API_KEY);
             await apiInstance.getAccount();
             
-            return {
-                status: 'UP',
-                lastChecked: new Date()
-            };
+            return { status: 'healthy', lastChecked: new Date() };
         } catch (error) {
-            return {
-                status: 'DOWN',
-                error: error.message,
-                lastChecked: new Date()
-            };
+            return { status: 'unhealthy', error: error.message, lastChecked: new Date() };
         }
     }
 
     async checkTwilio() {
         try {
-            const client = twilio(
-                process.env.TWILIO_ACCOUNT_SID,
-                process.env.TWILIO_AUTH_TOKEN
-            );
+            const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
             await client.api.accounts(process.env.TWILIO_ACCOUNT_SID).fetch();
             
-            return {
-                status: 'UP',
-                lastChecked: new Date()
-            };
+            return { status: 'healthy', lastChecked: new Date() };
         } catch (error) {
-            return {
-                status: 'DOWN',
-                error: error.message,
-                lastChecked: new Date()
-            };
+            return { status: 'unhealthy', error: error.message, lastChecked: new Date() };
         }
     }
 
     async checkMercadoPago() {
         try {
-            const client = new MercadoPagoConfig({ 
-                accessToken: process.env.MP_ACCESS_TOKEN 
-            });
+            const client = new MercadoPagoConfig({ accessToken: process.env.MP_ACCESS_TOKEN });
             const payment = new Payment(client);
             await payment.search();
             
-            return {
-                status: 'UP',
-                lastChecked: new Date()
-            };
+            return { status: 'healthy', lastChecked: new Date() };
         } catch (error) {
-            return {
-                status: 'DOWN',
-                error: error.message,
-                lastChecked: new Date()
-            };
+            return { status: 'unhealthy', error: error.message, lastChecked: new Date() };
         }
     }
 
@@ -90,3 +61,5 @@ class NotificationServiceHealth {
 }
 
 export default new NotificationServiceHealth();
+  
+
